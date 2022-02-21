@@ -40,38 +40,33 @@ class Dataset(torch.utils.data.Dataset):
             output_label = load(fd)
         return input_image, output_label
 
-class Residual_CNN_BB_obj(nn.Module):
+class Residual_1DCNN_obj(nn.Module):
     def __init__(self):
-        super(Residual_CNN_BB_obj,self).__init__()
+        super(Residual_1DCNN_obj,self).__init__()
         # 2x2 max pooling, but return the indece of the maximum for unpooling
-        self.max = nn.MaxPool2d(2,2)
+        self.max = nn.MaxPool2d(1,2)
+
+        self.avg = nn.AvgPool2d(1,2)
 
         # flattening the cnn to linear
         self.flatten = nn.Flatten()
         # linear layer for bottlenecking the autoencoder
-        self.bottleneck = nn.Linear(128, 256)
-        self.out = nn.Linear(256, 8)
+        self.bottleneck = nn.Linear(128, 25)
+        self.out = nn.Linear(25, 8)
 
         # deconvolution dictionary
         self.conv = {}
         self.conv_bn = {}
 
         # initialize deconvolution and batch normalization layers
-        self.conv_layer_init(name='init_layer', in_channels=1, out_channels=8, kernel_size=5, stride=1, padding=1)
-        self.conv_layer_init(name='res1_layer1', in_channels=8, out_channels=32, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res1_layer2', in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res1_layer3', in_channels=32, out_channels=32, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res1_layer4', in_channels=32, out_channels=64, kernel_size=3, stride=1, padding=1)
+        self.conv_layer_init(name='LoRa_1', in_channels=1, out_channels=16, kernel_size=(1, 4), stride=1, padding=(0, 0, 2, 1))
+        
+        self.conv_layer_init(name='LoRa_2', in_channels=16, out_channels=24, kernel_size=(1, 4), stride=1, padding=(0, 0, 2, 1))
+        self.conv_layer_init(name='LoRa_3', in_channels=24, out_channels=32, kernel_size=(1, 4), stride=1, padding=(0, 0, 2, 1))
+        self.conv_layer_init(name='LoRa_4', in_channels=32, out_channels=48, kernel_size=(1, 4), stride=1, padding=(0, 0, 2, 1))
+        self.conv_layer_init(name='LoRa_5', in_channels=48, out_channels=64, kernel_size=(1, 4), stride=1, padding=(0, 0, 2, 1))
+        self.conv_layer_init(name='distinct_LoRa_6', in_channels=64, out_channels=96, kernel_size=(2, 4), stride=1, padding=(0, 0, 2, 1))
 
-        self.conv_layer_init(name='res2_layer1', in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res2_layer2', in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res2_layer3', in_channels=64, out_channels=64, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res2_layer4', in_channels=64, out_channels=128, kernel_size=3, stride=1, padding=1)
-
-        self.conv_layer_init(name='res2_layer1', in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res2_layer2', in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res2_layer3', in_channels=128, out_channels=128, kernel_size=3, stride=1, padding=1)
-        self.conv_layer_init(name='res2_layer4', in_channels=128, out_channels=256, kernel_size=3, stride=1, padding=1)
 
         # convert dictionaries to layer modules
         self.conv = nn.ModuleDict(self.conv)
@@ -93,64 +88,52 @@ class Residual_CNN_BB_obj(nn.Module):
     def forward(self, x):
         
         #### INIT
-        init_layer = self.conv_layer(name='init_layer', input=x)
+        LoRa_1_layer = self.conv_layer(name='LoRa_1', input=x)
 
-        down_sized_layer1 = self.max(init_layer) 
+        # height out = (8192 + 2 + 1 - 4) / (1) + 1 = 8192
+        # width out = (2 + 0 + 0 - 1) / (1) + 1 = 2
 
-        #### RESIDUAL GROUPING 1
-        ## residual block 1
-        res1_layer1 = self.conv_layer(name='res1_layer1', input=down_sized_layer1)
+        down_sized_layer1 = self.max(LoRa_1_layer) 
 
-        res1_layer2 = self.conv_layer(name='res1_layer2', input=res1_layer1)
+        # height out = 8192//2 = 4096
+        # width out = 2//1 = 2
 
-        res1_added1 = torch.add(down_sized_layer1, res1_layer2)
+        LoRa_2_layer = self.conv_layer(name='LoRa_2', input=down_sized_layer1)
 
-        ## residual block 2
-        res1_layer3 = self.conv_layer(name='res1_layer3', input=res1_added1)
-
-        res1_layer4 = self.conv_layer(name='res1_layer4', input=res1_layer3)
-
-        res1_added2 = torch.add(res1_added1, res1_layer4)
-
-
-        down_sized_layer2 = self.max(res1_added2)
+        down_sized_layer2 = self.max(LoRa_2_layer) 
         
-        #### RESIDUAL GROUPING 2
-        ## residual block 3
-        res2_layer1 = self.conv_layer(name='res2_layer1', input=down_sized_layer2)
+        # height out = 4096//2 = 2048
+        # width out = 2//1 = 2
 
-        res2_layer2 = self.conv_layer(name='res2_layer2', input=res2_layer1)
+        LoRa_3_layer = self.conv_layer(name='LoRa_3', input=down_sized_layer2)
 
-        res2_added1 = torch.add(down_sized_layer2, res2_layer2)
+        down_sized_layer3 = self.max(LoRa_3_layer) 
 
-        ## residual block 4
-        res2_layer3 = self.conv_layer(name='res2_layer3', input=res2_added1)
+        # height out = 2048//2 = 1024
+        # width out = 2//1 = 2
 
-        res2_layer4 = self.conv_layer(name='res2_layer4', input=res2_layer3)
+        LoRa_4_layer = self.conv_layer(name='LoRa_4', input=down_sized_layer3)
 
-        res2_added2 = torch.add(res2_added1, res2_layer4)
+        down_sized_layer4 = self.max(LoRa_4_layer) 
 
+        # height out = 1024//2 = 512
+        # width out = 2//1 = 2
 
-        down_sized_layer3 = self.max(res2_added2)
+        LoRa_5_layer = self.conv_layer(name='LoRa_5', input=down_sized_layer4)
 
-        #### RESIDUAL GROUPING 3
-        ## residual block 5
-        res3_layer1 = self.conv_layer(name='res3_layer1', input=down_sized_layer3)
+        down_sized_layer5 = self.max(LoRa_5_layer) 
 
-        res3_layer2 = self.conv_layer(name='res3_layer2', input=res3_layer1)
+        # height out = 512//2 = 256
+        # width out = 2//1 = 2
 
-        res3_added1 = torch.add(down_sized_layer3, res3_layer2)
+        distinct_LoRa_6 = self.conv_layer(name='distinct_LoRa_6', input=down_sized_layer5)
 
-        ## residual block 6
-        res3_layer3 = self.conv_layer(name='res3_layer3', input=res3_added1)
+        down_sized_layer6 = self.avg(distinct_LoRa_6)
 
-        res3_layer4 = self.conv_layer(name='res3_layer4', input=res3_layer3)
+        # height out = 512//2 = 128
+        # width out = 2//2 = 1
 
-        res2_added3 = torch.add(res3_added1, res3_layer4)
-
-        down_sized_layer4 = self.max(res2_added3)
-
-        flattened_conv = self.flatten(down_sized_layer4)
+        flattened_conv = self.flatten(down_sized_layer1)
         
         output = self.bottleneck(flattened_conv)
 
@@ -207,9 +190,9 @@ class Network():
         dataloader_val = torch.utils.data.DataLoader(dataset_val, batch_size=32, shuffle=True)
 
 
-        Residual_CNN_BB = Residual_CNN_BB_obj().cuda()
+        Residual_1DCNN = Residual_1DCNN_obj().cuda()
 
-        parameters = list(Residual_CNN_BB.parameters())
+        parameters = list(Residual_1DCNN.parameters())
         # mean squared error loss calculation
         loss_func = nn.MSELoss()
         # adam optimizer, default beta 1 and beta 2, only learning rate set
@@ -229,12 +212,12 @@ class Network():
             average_loss = 0
             average_val_loss = 0
 
-            Residual_CNN_BB.train()
+            Residual_1DCNN.train()
             for j, (input_image_batch, output_label_batch) in enumerate(dataloader_train):
                 # soemtimes loads in batch size of 16
                 if input_image_batch.size()[0] == batch_size:
                     optimizer.zero_grad()
-                    loss, nn_output_batch = self.operate_nn(input_image_batch, output_label_batch[:, 2], Residual_CNN_BB, loss_func)
+                    loss, nn_output_batch = self.operate_nn(input_image_batch, output_label_batch[:, 2], Residual_1DCNN, loss_func)
                     average_loss = average_loss + loss.item()
                     # backwards propogation based on loss
                     loss.backward()
@@ -249,14 +232,14 @@ class Network():
 
 
             # enact validation
-            Residual_CNN_BB.eval()
+            Residual_1DCNN.eval()
             # no gradiant activation
             with torch.no_grad():
                 # for each image batch in the test
                 for j, (val_input_image_batch, val_output_label_batch) in enumerate(dataloader_val):
                     # soemtimes loads in batch size of 16
                     if val_input_image_batch.size()[0] == batch_size:
-                        val_loss = self.operate_nn(val_input_image_batch, val_output_label_batch, Residual_CNN_BB, loss_func)
+                        val_loss = self.operate_nn(val_input_image_batch, val_output_label_batch, Residual_1DCNN, loss_func)
                         average_val_loss = average_val_loss + val_loss.item()
                 # average all the validation losses from the testing batches 
                 average_val_loss = average_val_loss / (j+1)
@@ -267,7 +250,7 @@ class Network():
                 min_val_loss = val_loss
                 print('new minimum, saved')
                 # save the network to hard drive
-                torch.save([Residual_CNN_BB],'./model/' + file_name + '.pkl')
+                torch.save([Residual_1DCNN],'./model/' + file_name + '.pkl')
             # print info to user
             print('epoch: ' + str(i+1) + '/' + str(epoch_count) + ' ||| loss: ' + str(loss.item()) + ' ||| val_loss: ' + str(val_loss))
             # append list for usage in printing graph
