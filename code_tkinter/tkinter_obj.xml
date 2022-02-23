@@ -1,0 +1,212 @@
+<?xml version="1.0"?>
+<!-- Must be formatted as: attributes, then nodal_name, then children--> 
+<!-- all inputs must have a nodal name--> 
+<Root>
+    <nodal_name>root</nodal_name>
+
+    <Notebook>
+        <nodal_name>root_notebook</nodal_name>
+        <!-- MAIN TAB--> 
+        <Tab>
+            <tab_text>Main Tab </tab_text>
+            <nodal_name>main_tab</nodal_name>
+            
+            <Label>
+                <header>info:</header>
+                <text>Template Frame</text>
+                <type>text</type>
+                <nodal_name>test</nodal_name>
+            </Label>
+        </Tab>
+        
+        <Tab>
+            <tab_text>Train Network</tab_text>
+            <nodal_name>tab_net</nodal_name>
+
+            <Frame>
+                <nodal_name>frame:nndebug_canvas</nodal_name>
+                <Notebook>
+                    <nodal_name>notebook_net</nodal_name>
+                    <Tab>
+                        <tab_text>Network Info</tab_text>
+                        <nodal_name>tab_info</nodal_name>
+
+                        <Frame_Hor>
+                            <nodal_name>frame:nndebug_canvas</nodal_name>
+
+                            <Label>
+                                <image_size>240x240</image_size>
+                                <type>image</type>
+                                <header>Provided Label</header>
+                                <nodal_name>label_nnknown</nodal_name>
+                            </Label>
+                            <Label>
+                                <image_size>240x240</image_size>
+                                <type>image</type>
+                                <header>CNN Output</header>
+                                <nodal_name>label_nnguess</nodal_name>
+                            </Label>
+                        <Label>
+                                <image_size>240x240</image_size>
+                                <type>image</type>
+                                <header>Δ NN Out VS Label</header>
+                                <nodal_name>label_nndiff</nodal_name>
+                            </Label>
+                        </Frame_Hor>
+                        <Frame_Hor>
+                            <nodal_name>frame:nninfo_text</nodal_name>
+
+                            <Frame>
+                                <nodal_name>frame:nninfo_loss</nodal_name>
+
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Loss On Read</header>
+                                    <nodal_name>label_nnloss</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Avg Loss Last Epoch</header>
+                                    <nodal_name>label_nnavgloss</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Validation Loss On Read</header>
+                                    <nodal_name>label_nnvalloss</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Avg Loss Last Epoch</header>
+                                    <nodal_name>label_nnavgvloss</nodal_name>
+                                </Label>
+                            </Frame>
+                            <Frame>
+                                <nodal_name>frame:nninfo_acc</nodal_name>
+
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Accuracy On Read</header>
+                                    <nodal_name>label_nnacc</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Avg Acc Last Epoch</header>
+                                    <nodal_name>label_nnavgacc</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Validation Acc On Read</header>
+                                    <nodal_name>label_nnvalacc</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Avg Acc Last Epoch</header>
+                                    <nodal_name>label_nnavgvacc</nodal_name>
+                                </Label>
+                            </Frame>
+                            <Frame>
+                                <nodal_name>frame:nninfo_other</nodal_name>
+            
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Percentage Complete</header>
+                                    <nodal_name>label_nnpercentage</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Val Percentage Complete</header>
+                                    <nodal_name>label_nnvpercentage</nodal_name>
+                                </Label>
+                                <Label>
+                                    <type>text</type>
+                                    <text>NULL</text>
+                                    <header>Epoch Count</header>
+                                    <nodal_name>label_nnepoch</nodal_name>
+                                </Label>
+                            </Frame>
+                        </Frame_Hor>
+                    </Tab>
+                    <Tab>
+                        <tab_text>Network Graphs</tab_text>
+                        <nodal_name>tab_graph</nodal_name>
+                    
+                        <FigureCanvas>
+                            <image_size_inch>9x4</image_size_inch>
+                            <dpi>100</dpi>
+                            <xlabel>Epochs</xlabel>
+                            <ylabel>Loss</ylabel>
+                            <nodal_name>figcan_loss</nodal_name>
+                        </FigureCanvas>
+                        <FigureCanvas>
+                            <image_size_inch>9x4</image_size_inch>
+                            <dpi>100</dpi>
+                            <xlabel>Epochs</xlabel>
+                            <ylabel>Accuracy</ylabel>
+                            <nodal_name>figcan_acc</nodal_name>
+                        </FigureCanvas>
+                    </Tab>
+                </Notebook>
+            </Frame>
+            <Frame>
+                <nodal_name>frame:nninputs</nodal_name>
+
+                <Button>
+                    <text>Tra</text>
+                    <header>Train Network</header>
+                    <nodal_name>button_nntrain</nodal_name>
+                </Button>
+                <Entry>
+                    <variable>string</variable>
+                    <text>test</text>
+                    <header>File Name</header>
+                    <nodal_name>entry_filename</nodal_name>
+                </Entry>
+                <Entry>
+                    <variable>int</variable>
+                    <value>32</value>
+                    <header>Batch Size</header>
+                    <nodal_name>entry_batch</nodal_name>
+                </Entry>
+                <Entry>
+                    <variable>int</variable>
+                    <value>50</value>
+                    <header>Epoch Count</header>
+                    <nodal_name>entry_epoch</nodal_name>
+                </Entry>
+                <Entry>
+                    <variable>double</variable>
+                    <value>0.001</value>
+                    <header>Learning Rate</header>
+                    <nodal_name>entry_learning</nodal_name>
+                </Entry>
+                <Entry>
+                    <variable>double</variable>
+                    <value>0.92</value>
+                    <header>Data Percent for Training</header>
+                    <nodal_name>entry_trainpercent</nodal_name>
+                </Entry>
+                <Entry>
+                    <variable>int</variable>
+                    <value>100</value>
+                    <header>Print Data Every X Batches</header>
+                    <nodal_name>entry_timebetween</nodal_name>
+                </Entry>
+                <CheckButton>
+                    <text>Turn On Debug Evaluation</text>
+                    <header></header>
+                    <nodal_name>checkbutton_debugoff</nodal_name>
+                </CheckButton>
+            </Frame>
+        </Tab>
+    </Notebook>
+</Root>
