@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as ET
 import os
 from network_files.pytorch_layers import Network
+from network_files.pytorch_test import Test_Network
 from code_tkinter.tkinter_objects import Canvas_ASTF, CheckButton_ASTF, Dropdown_ASTF, FigureCanvas_ASTF, Frame_Hor_ASTF, Notebook_ASTF, Tab_ASTF, Label_ASTF, Root_ASTF, Button_ASTF, Entry_ASTF, Frame_ASTF, recurs_tkinter_objs
 
 
@@ -53,5 +54,7 @@ if __name__ == "__main__":
 
 
     network = Network(recurs_tkinter_objs(root, 'tab_net'))
+
+    test_net = Test_Network(recurs_tkinter_objs(root, 'tab_test'))
 
     root.object.mainloop()

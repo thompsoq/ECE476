@@ -46,12 +46,19 @@
                                 <header>CNN Output</header>
                                 <nodal_name>label_nnguess</nodal_name>
                             </Label>
-                        <Label>
+                            <Label>
                                 <image_size>240x240</image_size>
                                 <type>image</type>
                                 <header>Δ NN Out VS Label</header>
                                 <nodal_name>label_nndiff</nodal_name>
                             </Label>
+                            <Label>
+                                <image_size>240x240</image_size>
+                                <type>image</type>
+                                <header>Correct and Incorrect Guesses</header>
+                                <nodal_name>label_nncorrect</nodal_name>
+                            </Label>
+
                         </Frame_Hor>
                         <Frame_Hor>
                             <nodal_name>frame:nninfo_text</nodal_name>
@@ -139,21 +146,49 @@
                     <Tab>
                         <tab_text>Network Graphs</tab_text>
                         <nodal_name>tab_graph</nodal_name>
-                    
-                        <FigureCanvas>
-                            <image_size_inch>9x4</image_size_inch>
-                            <dpi>100</dpi>
-                            <xlabel>Epochs</xlabel>
-                            <ylabel>Loss</ylabel>
-                            <nodal_name>figcan_loss</nodal_name>
-                        </FigureCanvas>
-                        <FigureCanvas>
-                            <image_size_inch>9x4</image_size_inch>
-                            <dpi>100</dpi>
-                            <xlabel>Epochs</xlabel>
-                            <ylabel>Accuracy</ylabel>
-                            <nodal_name>figcan_acc</nodal_name>
-                        </FigureCanvas>
+                        
+
+                        <Notebook>
+                            <nodal_name>notebook_graphs</nodal_name>
+                            <Tab>
+                                <tab_text>General Loss</tab_text>
+                                <nodal_name>tab_gloss</nodal_name>
+
+                                <FigureCanvas>
+                                    <image_size_inch>9x4</image_size_inch>
+                                    <dpi>100</dpi>
+                                    <xlabel>Epochs</xlabel>
+                                    <ylabel>Loss</ylabel>
+                                    <nodal_name>figcan_loss</nodal_name>
+                                </FigureCanvas>
+                                <FigureCanvas>
+                                    <image_size_inch>9x4</image_size_inch>
+                                    <dpi>100</dpi>
+                                    <xlabel>Epochs</xlabel>
+                                    <ylabel>Accuracy</ylabel>
+                                    <nodal_name>figcan_acc</nodal_name>
+                                </FigureCanvas>
+                            </Tab>
+                            <Tab>
+                                <tab_text>Individual Loss</tab_text>
+                                <nodal_name>tab_iloss</nodal_name>
+
+                                <FigureCanvas>
+                                    <image_size_inch>9x4</image_size_inch>
+                                    <dpi>100</dpi>
+                                    <xlabel>Epochs</xlabel>
+                                    <ylabel>MSE</ylabel>
+                                    <nodal_name>figcan_indiloss</nodal_name>
+                                </FigureCanvas>
+                                <FigureCanvas>
+                                    <image_size_inch>9x4</image_size_inch>
+                                    <dpi>100</dpi>
+                                    <xlabel>Epochs</xlabel>
+                                    <ylabel>Ratio True Positives vs False Negatives</ylabel>
+                                    <nodal_name>figcan_indiacc</nodal_name>
+                                </FigureCanvas>               
+                            </Tab>
+                        </Notebook>
                     </Tab>
                 </Notebook>
             </Frame>
@@ -206,6 +241,109 @@
                     <header></header>
                     <nodal_name>checkbutton_debugoff</nodal_name>
                 </CheckButton>
+            </Frame>
+        </Tab>
+
+   
+        <Tab>
+            <tab_text>Test Network</tab_text>
+            <nodal_name>tab_test</nodal_name>
+
+            <Frame>
+                <nodal_name>frame:nntest_canvas</nodal_name>
+
+                <Frame_Hor>
+                    <nodal_name>frame:nntesthor_canvas</nodal_name>
+
+                    <Label>
+                        <image_size>240x240</image_size>
+                        <type>image</type>
+                        <header>Provided Label</header>
+                        <nodal_name>label_nntknown</nodal_name>
+                    </Label>
+                    <Label>
+                        <image_size>240x240</image_size>
+                        <type>image</type>
+                        <header>CNN Output</header>
+                        <nodal_name>label_nntguess</nodal_name>
+                    </Label>
+                    <Label>
+                        <image_size>240x240</image_size>
+                        <type>image</type>
+                        <header>Δ NN Out VS Label</header>
+                        <nodal_name>label_nntdiff</nodal_name>
+                    </Label>
+                    <Label>
+                        <image_size>240x240</image_size>
+                        <type>image</type>
+                        <header>Correct and Incorrect Guesses</header>
+                        <nodal_name>label_nntcorrect</nodal_name>
+                    </Label>
+
+                </Frame_Hor>
+                <Frame_Hor>
+                    <nodal_name>frame:nntinfo_text</nodal_name>
+
+                    <Frame>
+                        <nodal_name>frame:nntinfo_loss</nodal_name>
+
+                        <Label>
+                            <type>text</type>
+                            <text>NULL</text>
+                            <header>Avg Loss Last Epoch</header>
+                            <nodal_name>label_nntavgloss</nodal_name>
+                        </Label>
+                        <Label>
+                            <type>text</type>
+                            <text>NULL</text>
+                            <header>Avg Acc Last Epoch</header>
+                            <nodal_name>label_nntavgacc</nodal_name>
+                        </Label>
+                    </Frame>
+                    <Frame>
+                        <nodal_name>frame:nninfo_acc</nodal_name>
+                        <Label>
+                            <type>text</type>
+                            <text>NULL</text>
+                            <header>Percentage Complete</header>
+                            <nodal_name>label_nntpercentage</nodal_name>
+                        </Label>
+                    </Frame>
+                </Frame_Hor>
+
+            </Frame>
+            <Frame>
+                <nodal_name>frame:nninputs</nodal_name>
+
+                <Button>
+                    <text>Test</text>
+                    <header>Test Network</header>
+                    <nodal_name>button_nntest</nodal_name>
+                </Button>
+                <Button>
+                    <text>Load</text>
+                    <header>Load Model</header>
+                    <nodal_name>button_nnloadmodel</nodal_name>
+                </Button>
+                <Label>
+                    <type>text</type>
+                    <text>NULL</text>
+                    <header>Path to Model</header>
+                    <nodal_name>label_nnloadedfile</nodal_name>
+                </Label>
+                <Button>
+                    <text>Data</text>
+                    <header>Select Data Folder</header>
+                    <nodal_name>button_nnloaddata</nodal_name>
+                </Button>
+                <Label>
+                    <type>text</type>
+                    <text>NULL</text>
+                    <header>Path to Data Folder</header>
+                    <nodal_name>label_nndatafolder</nodal_name>
+                </Label>
+
+
             </Frame>
         </Tab>
     </Notebook>
